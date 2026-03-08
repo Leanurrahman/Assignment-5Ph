@@ -388,6 +388,6 @@ const displaySearchResults = (results) => {
 //update dom load event
 document.addEventListener("DOMContentLoaded", () => {
     setupFilterButtons();
-    setupSearchFunctionality(); // নতুন ফাংশন কল
+    setupSearchFunctionality(); // new function call
     loadAllIssues();
 });
