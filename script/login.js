@@ -1,4 +1,3 @@
-// script/login.js
 
 const ADMIN_CREDENTIALS = {
     username: "admin",
@@ -6,15 +5,13 @@ const ADMIN_CREDENTIALS = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    // চেক করছি আমরা কোন পেজে আছি
+    // check korci amra kon page e achi
     const path = window.location.pathname;
     const isHomePage = path.includes('home.html');
 
     if (!isHomePage) {
-        // যদি home.html না হয়, তাহলে এটি লগইন পেজ (index.html)
         initLogin();
     } else {
-        // এটি হোম পেজ (home.html)
         initHomePage();
     }
 });
@@ -34,7 +31,7 @@ function initLogin() {
         if (userIn === ADMIN_CREDENTIALS.username && passIn === ADMIN_CREDENTIALS.password) {
             if(errorMsg) errorMsg.classList.add('hidden');
             
-            // সফল হলে home.html এ রিডাইরেক্ট করো
+            
             window.location.href = 'home.html?user=' + encodeURIComponent(ADMIN_CREDENTIALS.username);
         } else {
             if(errorMsg) errorMsg.classList.remove('hidden');
@@ -51,9 +48,7 @@ function initHomePage() {
     const urlParams = new URLSearchParams(window.location.search);
     const currentUser = urlParams.get('user');
 
-    // যদি ইউজার লগইন না করে সরাসরি home.html এ আসে
     if (!currentUser || currentUser !== ADMIN_CREDENTIALS.username) {
-        // তাকে index.html (লগইন পেজ) এ পাঠাও
         window.location.href = 'index.html';
         return;
     }
