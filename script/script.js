@@ -437,7 +437,7 @@ const displaySearchResults = (results) => {
     });
 };
 
-//update dom load event
+//Updated dom load event here
 document.addEventListener("DOMContentLoaded", () => {
     setupFilterButtons();
     setupSearchFunctionality(); // new function call
