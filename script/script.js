@@ -118,19 +118,19 @@ const filterAndDisplay = (type) => {
                     ${issue.description}
                 </p>
 
-                          <!-- Labels -->
+                
                 <div class="flex flex-wrap gap-2 mb-auto"> 
                     ${issue.labels.map(label => {
                         let labelText = label.toUpperCase();
                         let iconSrc = "";
                         let labelStyle = "bg-gray-100 text-gray-700 border-gray-200";
 
-                        // style and icon bug er jnno
+                   
                         if(label.toLowerCase() === 'bug') {
                             labelStyle = "bg-red-50 text-red-600 border-red-200";
                             iconSrc = "./assets/BugDroid.png";
                         }
-                        // help wanted jnno icon and style
+                      
                         else if(label.toLowerCase() === 'help wanted') {
                             labelStyle = "bg-yellow-50 text-yellow-700 border-yellow-200";
                             iconSrc = "./assets/Lifebuoy.png";
@@ -138,7 +138,7 @@ const filterAndDisplay = (type) => {
                             labelStyle = "bg-yellow-50 text-yellow-700 border-yellow-200";
                             iconSrc = "./assets/Lifebuoy.png";
                         }
-                        //enhancement jnno icon r style
+                 
                         else if(label.toLowerCase() === 'enhancement') {
                              labelStyle = "bg-green-50 text-green-600 border-green-200";
                             iconSrc = "./assets/Sparkle.png";
@@ -412,7 +412,6 @@ const displaySearchResults = (results) => {
 
         card.innerHTML = `
             <div class="flex flex-col h-full">
-            //   status icon eikhne add korci
 
                 <div class="flex justify-between items-start mb-4">
                     <img src="${statusImgSrc}" alt="${issue.status}" class="h-6 w-6 object-contain">
