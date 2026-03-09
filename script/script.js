@@ -380,7 +380,6 @@ const displaySearchResults = (results) => {
             statusImgSrc = "./assets/Closed- Status .png"; 
             borderColorClass = "border-t-[3px] border-t-purple-500";
         }
-        
    
         const priorityColor = issue.priority === 'high' ? "text-red-600 bg-red-50" : (issue.priority === 'medium' ? "text-orange-600 bg-orange-50" : "text-blue-600 bg-blue-50");
 
