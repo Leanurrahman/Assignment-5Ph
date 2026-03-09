@@ -24,13 +24,16 @@ const loadAllIssues = () => {
 };
 
 const filterAndDisplay = (type) => {
-    const container = document.getElementById("issues-container");
-    if (!container) {
-        console.error("issues-container not found in HTML!");
-        return;
-    }
-    
+      const container = document.getElementById("issues-container");
+    const loadingSection = document.getElementById("loading-section"); 
+    const countElement = document.getElementById("issues-count");
+
+    if (!container) return;
+
+    // loading section dekhano and container khali kora
+    if (loadingSection) loadingSection.classList.remove("hidden");
     container.innerHTML = ""; 
+
     let filteredData = [];
     
     if (type === 'all') {
@@ -41,17 +44,27 @@ const filterAndDisplay = (type) => {
         filteredData = allIssuesData.filter(issue => issue.status === 'closed');
     }
 
-    // modal eikhne add korci
-    const countElement = document.getElementById("issues-count");
+    // counter update kora
     if (countElement) {
         countElement.innerText = `${filteredData.length} Issues`;
     }
 
 
-    if (filteredData.length === 0) {
-        container.innerHTML = "<p class='text-center col-span-full text-gray-500'>No issues found.</p>";
-        return;
-    }
+    
+    setTimeout(() => {
+        
+        if (loadingSection) loadingSection.classList.add("hidden");
+
+        if (filteredData.length === 0) {
+            container.innerHTML = "<p class='text-center col-span-full text-gray-500 py-10'>No issues found.</p>";
+            return;
+        }
+
+        filteredData.forEach(issue => {
+            const card = createIssueCard(issue);
+            container.appendChild(card);
+        });
+    }, 250); //250 milisec wait korbe loading hote
 
     filteredData.forEach(issue => {
         const card = document.createElement("div");
@@ -87,7 +100,7 @@ const filterAndDisplay = (type) => {
 
         card.innerHTML = `
             <div class="flex flex-col h-full">
-                <!-- উপরের অংশ: স্ট্যাটাস আইকন এবং প্রায়োরিটি -->
+
                 <div class="flex justify-between items-start mb-4">
                     <img src="${statusImgSrc}" alt="${issue.status}" class="h-6 w-6 object-contain">
                     
@@ -96,12 +109,11 @@ const filterAndDisplay = (type) => {
                     </span>
                 </div>
                 
-                <!-- টাইটেল -->
+                
                 <h3 class="font-bold text-gray-900 text-lg leading-snug mb-2 line-clamp-2">
                     ${issue.title}
                 </h3>
                 
-                <!-- ডেসক্রিপশন -->
                 <p class="text-gray-500 text-sm mb-4 line-clamp-2">
                     ${issue.description}
                 </p>
@@ -146,7 +158,7 @@ const filterAndDisplay = (type) => {
                     }).join('')}
                 </div>
 
-                <!-- ফুটার অংশ (একদম নিচে, সব বামে) -->
+              
                 <div class="border-t border-gray-100 pt-4 mt-4">
                     <div class="flex flex-col items-start gap-1 text-xs text-gray-500">
                         <div>
@@ -220,10 +232,10 @@ const showIssueDetails = (issue) => {
     // status badge
     const statusBadge = document.getElementById('modal-status-badge');
     if (issue.status === 'open') {
-        statusBadge.className = "px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800";
+        statusBadge.className = "px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-600 text-white";
         statusBadge.innerText = "Opened";
     } else {
-        statusBadge.className = "px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800";
+        statusBadge.className = "px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-500 text-white";
         statusBadge.innerText = "Closed";
     }
 
@@ -237,11 +249,11 @@ const showIssueDetails = (issue) => {
     const priorityEl = document.getElementById('modal-priority');
     priorityEl.innerText = issue.priority.toUpperCase();
     if (issue.priority === 'high') {
-        priorityEl.className = "inline-block px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700";
+        priorityEl.className = "inline-block px-3 py-1 rounded-full text-xs font-bold bg-red-500 text-white";
     } else if (issue.priority === 'medium') {
-        priorityEl.className = "inline-block px-3 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700";
+        priorityEl.className = "inline-block px-3 py-1 rounded-full text-xs font-bold bg-orange-500 text-white";
     } else {
-        priorityEl.className = "inline-block px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700";
+        priorityEl.className = "inline-block px-3 py-1 rounded-full text-xs font-bold bg-blue-500 text-white";
     }
 
     const labelsContainer = document.getElementById('modal-labels');
@@ -344,6 +356,8 @@ const setupSearchFunctionality = () => {
 // search result dekhabor function
 const displaySearchResults = (results) => {
     const container = document.getElementById("issues-container");
+    if (!container) return;
+
     container.innerHTML = "";
 
     if (results.length === 0) {
@@ -354,25 +368,64 @@ const displaySearchResults = (results) => {
     results.forEach(issue => {
         const card = document.createElement("div");
         
-        let statusImgSrc = issue.status === 'open' ? "./assets/Open-Status.png" : "./assets/Closed-Status.png";
-        let borderColorClass = issue.status === 'open' ? "border-t-[3px] border-t-green-500" : "border-t-[3px] border-t-purple-500";
+   
+        let statusImgSrc = "";
+        let borderColorClass = "";
+
+        if (issue.status === 'open') {
+            statusImgSrc = "./assets/Open-Status.png"; 
+            borderColorClass = "border-t-[3px] border-t-green-500";
+        } else {
+         
+            statusImgSrc = "./assets/Closed- Status .png"; 
+            borderColorClass = "border-t-[3px] border-t-purple-500";
+        }
+        
+   
         const priorityColor = issue.priority === 'high' ? "text-red-600 bg-red-50" : (issue.priority === 'medium' ? "text-orange-600 bg-orange-50" : "text-blue-600 bg-blue-50");
 
         card.className = `bg-white border border-gray-200 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between h-full ${borderColorClass}`;
         card.style.cursor = "pointer";
-        card.addEventListener('click', () => showIssueDetails(issue.id));
+        
+      
+        card.addEventListener('click', () => showIssueDetails(issue));
+
+      
+        const labelsHTML = issue.labels.map(label => {
+            let labelText = label.toUpperCase();
+            let iconSrc = "";
+            let labelStyle = "bg-gray-100 text-gray-700 border-gray-200";
+
+            if (label.toLowerCase() === 'bug') {
+                labelStyle = "bg-red-50 text-red-600 border-red-200";
+                iconSrc = "./assets/BugDroid.png";
+            } else if (label.toLowerCase() === 'help wanted' || label.toLowerCase() === 'good first issue') {
+                labelStyle = "bg-yellow-50 text-yellow-700 border-yellow-200";
+                iconSrc = "./assets/Lifebuoy.png";
+            } else if (label.toLowerCase() === 'enhancement' || label.toLowerCase() === 'documentation') {
+                labelStyle = "bg-green-50 text-green-600 border-green-200";
+                iconSrc = "./assets/Sparkle.png";
+            }
+
+            const iconHTML = iconSrc ? `<img src="${iconSrc}" alt="" class="w-3.5 h-3.5 object-contain">` : '';
+            return `<span class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border ${labelStyle}">${iconHTML}${labelText}</span>`;
+        }).join('');
 
         card.innerHTML = `
             <div class="flex flex-col h-full">
+            //   status icon eikhne add korci
+
                 <div class="flex justify-between items-start mb-4">
                     <img src="${statusImgSrc}" alt="${issue.status}" class="h-6 w-6 object-contain">
                     <span class="text-xs font-medium px-3 py-1 rounded-full ${priorityColor}">${issue.priority.toUpperCase()}</span>
                 </div>
+                
                 <h3 class="font-bold text-gray-900 text-lg leading-snug mb-2 line-clamp-2">${issue.title}</h3>
                 <p class="text-gray-500 text-sm mb-4 line-clamp-2">${issue.description}</p>
-                <div class="flex flex-wrap gap-2 mb-auto"> 
-                    ${issue.labels.map(label => `<span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded border">${label.toUpperCase()}</span>`).join('')}
-                </div>
+                
+                <!-- lebel section -->
+                <div class="flex flex-wrap gap-2 mb-auto">${labelsHTML}</div>
+                
                 <div class="border-t border-gray-100 pt-4 mt-4">
                     <div class="flex flex-col items-start gap-1 text-xs text-gray-500">
                         <div><span class="font-medium text-gray-700">#${issue.id}</span> by <span class="font-medium text-gray-700">${issue.author}</span></div>
